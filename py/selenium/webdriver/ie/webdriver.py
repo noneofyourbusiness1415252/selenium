@@ -43,21 +43,25 @@ class WebDriver(RemoteWebDriver):
          - keep_alive - Deprecated: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
 
-        self.service = service if service else Service()
-        options = options if options else Options()
+        self.iedriver = service if service else Service()
+        self.options = options if options else Options()
+        self.keep_alive = keep_alive
 
-        self.service.path = DriverFinder.get_path(self.service, options)
-        self.service.start()
+        self.iedriver.path = DriverFinder.get_path(self.iedriver, self.options)
+        self.iedriver.start()
 
         executor = RemoteConnection(
-            remote_server_addr=self.service.service_url,
-            keep_alive=keep_alive,
-            ignore_proxy=options._ignore_local_proxy,
+            remote_server_addr=self.iedriver.service_url,
+            keep_alive=self.keep_alive,
+            ignore_proxy=self.options._ignore_local_proxy,
         )
 
-        super().__init__(command_executor=executor, options=options)
+        super().__init__(command_executor=executor, options=self.options)
         self._is_remote = False
 
     def quit(self) -> None:
         super().quit()
-        self.service.stop()
+        self.iedriver.stop()
+
+    def create_options(self) -> Options:
+        return Options()

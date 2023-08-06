@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import logging
+import shutil
 from pathlib import Path
 
 from selenium.common.exceptions import NoSuchDriverException
@@ -33,7 +34,7 @@ class DriverFinder:
 
     @staticmethod
     def get_path(service: Service, options: BaseOptions) -> str:
-        path = service.path
+        path = shutil.which(service.path)
         try:
             path = SeleniumManager().driver_location(options) if path is None else path
         except Exception as err:
@@ -41,6 +42,6 @@ class DriverFinder:
             raise NoSuchDriverException(msg) from err
 
         if path is None or not Path(path).is_file():
-            raise NoSuchDriverException(f"Unable to locate or obtain driver for {options.capabilities['browserName']}")
+            raise NoSuchDriverException(f"Unable to locate or obtain {service.path}")
 
         return path

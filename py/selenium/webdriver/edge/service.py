@@ -20,6 +20,8 @@ import warnings
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
+DEFAULT_EXECUTABLE_PATH = "msedgedriver"
+
 
 class Service(service.ChromiumService):
     """A Service class that is responsible for the starting and stopping of
@@ -36,7 +38,7 @@ class Service(service.ChromiumService):
 
     def __init__(
         self,
-        executable_path: str = None,
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
         verbose: bool = False,
         log_path: typing.Optional[str] = None,
